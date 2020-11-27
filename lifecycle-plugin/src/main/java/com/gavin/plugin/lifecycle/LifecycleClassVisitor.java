@@ -19,7 +19,7 @@ public class LifecycleClassVisitor extends ClassVisitor implements Opcodes {
 
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-        //System.out.println("LifecycleClassVisitor : visit -----> started ：" + name);
+//        System.out.println("LifecycleClassVisitor : visit -----> started ：" + name);
         this.mClassName = name;
         super.visit(version, access, name, signature, superName, interfaces);
     }
@@ -42,6 +42,7 @@ public class LifecycleClassVisitor extends ClassVisitor implements Opcodes {
         }
         return mv;
     }
+
 
     @Override
     public void visitEnd() {

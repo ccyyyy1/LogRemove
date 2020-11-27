@@ -1,1 +1,3 @@
+include ':myAnno'
+include ':myproc'
 include ':app', ':lifecycle-plugin', ':lifecycle-plugin'

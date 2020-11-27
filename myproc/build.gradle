@@ -1,0 +1,19 @@
+apply plugin: 'java-library'
+//apply plugin: 'kotlin'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.google.auto.service:auto-service:1.0-rc4'
+    implementation files('libs\\tools.jar')
+    annotationProcessor "com.google.auto.service:auto-service:1.0-rc4"
+//    implementation 'com.squareup:javapoet:1.7.0'
+    // https://mvnrepository.com/artifact/com.moparisthebest.aptIn16/apt-mirror-api
+//    implementation group: 'com.moparisthebest.aptIn16', name: 'apt-mirror-api', version: '0.1'
+//    implementation project(':myAnno')
+    implementation files('libs\\tools.jar') //jdk1.8
+}
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+

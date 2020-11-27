@@ -80,22 +80,28 @@ class LifecyclePlugin extends Transform implements Plugin<Project> {
      */
     static void handleDirectoryInput(DirectoryInput directoryInput, TransformOutputProvider outputProvider) {
         //是否是目录
+        println "handleDirectoryInput: " + directoryInput
         if (directoryInput.file.isDirectory()) {
             //列出目录所有文件（包含子文件夹，子文件夹内文件）
             directoryInput.file.eachFileRecurse { File file ->
+                if(!isClassFile(file))
+                    return
+
+                String fullPath = file.getCanonicalPath()
+
                 def name = file.name
-                if (checkClassFile(name)) {
+//                if (checkClassFile(name)) {
                     println '----------- deal with "class" file <' + name + '> -----------'
                     ClassReader classReader = new ClassReader(file.bytes)
                     ClassWriter classWriter = new ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-                    ClassVisitor cv = new LifecycleClassVisitor(classWriter)
+                    ClassVisitor cv = new LogRemoveClassVisitor(classWriter)
                     classReader.accept(cv, EXPAND_FRAMES)
                     byte[] code = classWriter.toByteArray()
                     FileOutputStream fos = new FileOutputStream(
                             file.parentFile.absolutePath + File.separator + name)
                     fos.write(code)
                     fos.close()
-                }
+//                }
             }
         }
         //处理完输入文件之后，要把输出给下一个任务
@@ -163,10 +169,25 @@ class LifecyclePlugin extends Transform implements Plugin<Project> {
      * @return
      */
     static boolean checkClassFile(String name) {
+        println "checkClassFile: " + name
         //只处理需要的class文件
         return (name.endsWith(".class") && !name.startsWith("R\$")
                 && !"R.class".equals(name) && !"BuildConfig.class".equals(name)
                 && "android/support/v4/app/FragmentActivity.class".equals(name))
+    }
+
+    static boolean isClassFile(File f){
+        if(f == null)
+            return false
+        if(!f.isFile())
+            return false
+        return isClassFile(f.getCanonicalPath())
+    }
+
+    static boolean isClassFile(String name){
+        if(name == null)
+            return false
+        return name.toLowerCase().endsWith(".class")
     }
 
 }
